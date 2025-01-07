@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
-import Task, { ITask } from "../models/Task";
-import { id } from "../../../frontend/node_modules/next/dist/compiled/webpack/bundle5";
+import Task from "../models/Task";
 
-export const createTask = async (req: Request, res: Response) => {
+export const createTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const count = await Task.countDocuments();
     const task = new Task({
@@ -12,41 +14,49 @@ export const createTask = async (req: Request, res: Response) => {
     const savedTask = await task.save();
     res.status(201).json(savedTask);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
-export const getTasks = async (req: Request, res: Response) => {
+export const getTasks = async (_req: Request, res: Response): Promise<void> => {
   try {
     const tasks = await Task.find().sort("order").populate("relatedTasks");
     res.json(tasks);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
-export const updateTask = async (req: Request, res: Response) => {
+export const updateTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     }).populate("relatedTasks");
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      res.status(404).json({ message: "Task not found" });
+      return;
     }
 
     res.json(task);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
-export const deleteTask = async (req: Request, res: Response) => {
+export const deleteTask = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
 
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      res.status(404).json({ message: "Task not found" });
+      return;
     }
 
     // Reorder remaining tasks
@@ -57,11 +67,14 @@ export const deleteTask = async (req: Request, res: Response) => {
 
     res.json({ message: "Task deleted" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: (error as Error).message });
   }
 };
 
-export const reorderTasks = async (req: Request, res: Response) => {
+export const reorderTasks = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { tasks } = req.body;
 
@@ -74,6 +87,6 @@ export const reorderTasks = async (req: Request, res: Response) => {
     const updatedTasks = await Task.find().sort("order");
     res.json(updatedTasks);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: (error as Error).message });
   }
 };

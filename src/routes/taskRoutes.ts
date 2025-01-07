@@ -1,13 +1,13 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   createTask,
   getTasks,
   updateTask,
   deleteTask,
   reorderTasks,
-} from "../src/controllers/taskController";
+} from "../controllers/taskController";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post("/", createTask);
 router.get("/", getTasks);
