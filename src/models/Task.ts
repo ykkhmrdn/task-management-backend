@@ -6,6 +6,8 @@ export interface ITask extends Document {
   isCompleted: boolean;
   order: number;
   relatedTasks: mongoose.Types.ObjectId[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const TaskSchema: Schema = new Schema(
@@ -16,7 +18,9 @@ const TaskSchema: Schema = new Schema(
     order: { type: Number, required: true },
     relatedTasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 export default mongoose.model<ITask>("Task", TaskSchema);
