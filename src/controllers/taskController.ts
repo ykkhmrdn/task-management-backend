@@ -27,22 +27,17 @@ export const createTask = async (
   res: Response
 ): Promise<void> => {
   try {
-    if (!req.body.title || !req.body.description) {
-      res.status(400).json({
-        success: false,
-        message: "Validation failed",
-        error: "Title and description are required",
-      });
-      return;
-    }
+    const highestOrderTask = await Task.findOne().sort("-order");
+    const newOrder = highestOrderTask ? highestOrderTask.order + 1 : 0;
 
-    const count = await Task.countDocuments();
     const task = new Task({
       ...req.body,
-      order: count,
+      order: 0,
     });
-    const savedTask = await task.save();
 
+    await Task.updateMany({}, { $inc: { order: 1 } });
+
+    const savedTask = await task.save();
     res.status(201).json({
       success: true,
       message: "Task created successfully",
