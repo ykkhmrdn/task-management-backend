@@ -85,6 +85,9 @@ backend/
 ### Tasks
 
 ```typescript
+// Test route
+GET /api/health
+
 // Get all tasks
 GET /tasks
 
