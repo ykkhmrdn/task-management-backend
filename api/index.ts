@@ -11,8 +11,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Test route
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK" });
+});
+
 // Routes
-app.use("/tasks", taskRoutes);
+app.use("/api/tasks", taskRoutes);
 
 // MongoDB connection
 const MONGODB_URI =
